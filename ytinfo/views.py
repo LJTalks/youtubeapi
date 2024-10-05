@@ -44,6 +44,8 @@ def fetch_data(request):
     
     if request.method == 'POST':
         channel_id = request.POST.get('channel_id')
+        sort_by = request.POST.get('sort_by')
+        
         print(f"Channel ID received: {channel_id}")
         videos = get_videos_from_channel(channel_id)
         
@@ -52,7 +54,6 @@ def fetch_data(request):
             video_id = video['id'].get('videoId')
             if video_id:  # Check if video_id exists before proceeding
                 video_details = get_video_details(video_id)
-                video_details_list.append(video_details)
                 
                 # Calculate days since published
                 published_at = video_details['snippet']['publishedAt']
@@ -63,11 +64,43 @@ def fetch_data(request):
                 
                 days_since_published = (datetime.now() - published_date).days
                 
-                # Add the formatted date to the video details
+                # Calculate engagement percentage
+                views = int(video_details['statistics']['viewCount'])
+                likes = int(video_details['statistics']['likeCount'])
+                comments = int(video_details[
+                    'statistics'].get('commentCount', 0))
+                
+                if views > 0:  # Prevent division by 0
+                    likes_to_views = (likes / views) * 100
+                    comments_to_views = (comments / views) * 100
+                    total_engagement_rate = ((likes + comments) / views) * 100
+                else:
+                    likes_to_views = 0
+                    comments_to_views = 0 
+                    total_engagement_rate = 0
+                    
+                # Add calculated metrics to the video details
                 video_details[
                     'formatted_published_date'] = formatted_published_date
                 video_details['days_since_published'] = days_since_published
-    
-    # Pass the video details to the front-end for display
+                video_details['likes_to_views'] = likes_to_views
+                video_details['comments_to_views'] = comments_to_views
+                video_details['total_engagement_rate'] = total_engagement_rate
+                
+                # Append the video details to the list (only once) 
+                video_details_list.append(video_details)
+                
+        # Sorting logic
+        if sort_by == 'date':
+            video_details_list.sort(key=lambda x: x[
+                'snippet']['publishedAt'], reverse=True)
+        elif sort_by == 'views':
+            video_details_list.sort(key=lambda x: int(
+                x['statistics']['viewCount']), reverse=True)
+        elif sort_by == 'engagement_rate':
+            video_details_list.sort(key=lambda x: x[
+                'engagement_rate'], reverse=True)
+
+    # Pass the video details to front-end for display
     context = {'video_details_list': video_details_list}
     return render(request, 'ytinfo/yt_main.html', context)

@@ -8,7 +8,15 @@
         <div class="form-group">
             <label for="channel_id">Enter YouTube Channel ID:</label>
             <input type="text" id="channel_id" name="channel_id" class="form-control" required
-                placeholder="Your Channel ID">
+                placeholder="Enter Channel ID">
+        </div>
+        <div class="form-group">
+            <label for="sort-by">Sort by:</label>
+            <select id="sort_by" name="sort_by" class="form-control">
+                <option value="date">Published Date</option>
+                <option value="views">Views</option>
+                <option value="total_engagement_rate">Engagement Rate</option>
+            </select>
         </div>
         <div class="text-center">
             <button type="submit" class="btn btn-primary">Fetch Data</button>
@@ -27,12 +35,12 @@
                         <p class="card-text">
                             <strong>Published on:</strong> {{ video.formatted_published_date }}<br>
                             <strong>Views:</strong> {{ video.statistics.viewCount }}<br>
-                            <strong>Likes:</strong> {{ video.statistics.likeCount }}
-                        </p>
-                        <p class="card-text"></p>
-                        <strong>Engagement Rate:</strong> {{ video.statistics.likeCount|floatformat:2 }} /
-                        {{ video.statistics.viewCount }}<br>
-                        <strong>Days Since Published:</strong> {{ video.days_since_published }}
+                            <strong>Likes:</strong> {{ video.statistics.likeCount }} |
+                            {{ video.likes_to_views|floatformat:2 }}%<br>
+                            <strong>Comments:</strong> {{ video.statistics.commentCount }} |
+                            {{ video.comments_to_views|floatformat:2 }}%<br>
+                            <strong>Total Engagement:</strong> {{ video.total_engagement_rate|floatformat:2 }}%<br>
+                            <strong>Days Since Published:</strong> {{ video.days_since_published }}
                         </p>
                     </div>
                 </div>
