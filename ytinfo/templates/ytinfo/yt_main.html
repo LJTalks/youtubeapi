@@ -1,0 +1,10 @@
+{% extends base %}
+<!-- Need to set up base.html -->
+
+<!-- This is the front end form for user to iput their YouTube 
+ Channel ID to extract data for research and stats -->
+<form method="POST" action="/fetch-data">
+    <label for="channel_id">Enter YouTube Channel ID:</label>
+    <input type="text" id="channel_id" name="channel_id" required>
+    <button type="submit">Fetch Data</button>
+</form>
