@@ -41,12 +41,13 @@ def get_video_details(video_id):
 # Main view to handle form submission and display data
 def fetch_data(request):
     video_details_list = []  # Initialize an empty list for the videos
+    channel_id = None  # Initialise as None
     
     if request.method == 'POST':
         channel_id = request.POST.get('channel_id')
-        sort_by = request.POST.get('sort_by')
+        # sort_by = request.POST.get('sort_by')
         
-        print(f"Channel ID received: {channel_id}")
+        # print(f"Channel ID received: {channel_id}")
         videos = get_videos_from_channel(channel_id)
         
         # Fetch detailed info for each video
@@ -90,16 +91,16 @@ def fetch_data(request):
                 # Append the video details to the list (only once) 
                 video_details_list.append(video_details)
                 
-        # Sorting logic
-        if sort_by == 'date':
-            video_details_list.sort(key=lambda x: x[
-                'snippet']['publishedAt'], reverse=True)
-        elif sort_by == 'views':
-            video_details_list.sort(key=lambda x: int(
-                x['statistics']['viewCount']), reverse=True)
-        elif sort_by == 'engagement_rate':
-            video_details_list.sort(key=lambda x: x[
-                'engagement_rate'], reverse=True)
+        # # Sorting logic
+        # if sort_by == 'date':
+        #     video_details_list.sort(key=lambda x: x[
+        #         'snippet']['publishedAt'], reverse=True)
+        # elif sort_by == 'views':
+        #     video_details_list.sort(key=lambda x: int(
+        #         x['statistics']['viewCount']), reverse=True)
+        # elif sort_by == 'engagement_rate':
+        #     video_details_list.sort(key=lambda x: x[
+        #         'engagement_rate'], reverse=True)
 
     # Pass the video details to front-end for display
     context = {'video_details_list': video_details_list}
