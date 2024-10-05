@@ -8,3 +8,5 @@ pathspec==0.12.1
 psycopg2==2.9.9
 sqlparse==0.5.1
 whitenoise==6.5.0
+requests==2.31.0
+
