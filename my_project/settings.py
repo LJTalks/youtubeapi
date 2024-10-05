@@ -35,6 +35,10 @@ ALLOWED_HOSTS = [
     ".herokuapp.com",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://8000-ljtalks-youtubeapi-vrani12gxb6.ws.codeinstitute-ide.net",
+    ]
+
 
 # Application definition
 
@@ -63,7 +67,7 @@ ROOT_URLCONF = "my_project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

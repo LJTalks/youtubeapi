@@ -1,10 +1,45 @@
-{% extends base %}
-<!-- Need to set up base.html -->
+{% extends 'base.html' %}
 
-<!-- This is the front end form for user to iput their YouTube 
- Channel ID to extract data for research and stats -->
-<form method="POST" action="/fetch-data">
-    <label for="channel_id">Enter YouTube Channel ID:</label>
-    <input type="text" id="channel_id" name="channel_id" required>
-    <button type="submit">Fetch Data</button>
-</form>
+{% block content %}
+<div class="mt-5">
+    <h2 class="text-center">YouTube Channel Data Fetcher</h2>
+    <form method="POST" action="/fetch-data/" class="mt-3">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="channel_id">Enter YouTube Channel ID:</label>
+            <input type="text" id="channel_id" name="channel_id" class="form-control" required
+                placeholder="Your Channel ID">
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Fetch Data</button>
+        </div>
+    </form>
+
+    {% if video_details_list %}
+    <div class="mt-5">
+        <h3>Video Details:</h3>
+        <div class="row">
+            {% for video in video_details_list %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.snippet.title }}</h5>
+                        <p class="card-text">
+                            <strong>Published on:</strong> {{ video.formatted_published_date }}<br>
+                            <strong>Views:</strong> {{ video.statistics.viewCount }}<br>
+                            <strong>Likes:</strong> {{ video.statistics.likeCount }}
+                        </p>
+                        <p class="card-text"></p>
+                        <strong>Engagement Rate:</strong> {{ video.statistics.likeCount|floatformat:2 }} /
+                        {{ video.statistics.viewCount }}<br>
+                        <strong>Days Since Published:</strong> {{ video.days_since_published }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
