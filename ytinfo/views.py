@@ -8,14 +8,51 @@ import html
 import re
 
 
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+# Function to mask API keys (show only the first and last 4 characters)
+def mask_key(key):
+    return key[:4] + '*' * (len(key) - 8) + key[-4:]
+
+
+YOUTUBE_API_KEYS = [os.getenv(
+    "YOUTUBE_API_KEY_1"), os.getenv("YOUTUBE_API_KEY_2")]
+current_key_index = 0  # Start wit the second key first
+YOUTUBE_API_KEY = YOUTUBE_API_KEYS[current_key_index]  # Set initial API key
+
+# Print the masked initial API key to check which one we're starting with
+print(f"Starting with API Key: {mask_key(YOUTUBE_API_KEY)}")
+
 BASE_URL = 'https://www.googleapis.com/youtube/v3/'
+
+
+# Function to switch API keys
+def switch_api_key():
+    global current_key_index, YOUTUBE_API_KEY
+    # Cycle through keys
+    current_key_index = (current_key_index + 1) % len(YOUTUBE_API_KEYS)
+    # Update global API key
+    YOUTUBE_API_KEY = YOUTUBE_API_KEYS[current_key_index]
+
+    # Check which key is currently in use
+    print(f"Switched to API Key: {mask_key(YOUTUBE_API_KEY)}")
+    return YOUTUBE_API_KEY
+
+    # check which key is currently in use
+    print(f"Switching to API Key: {mask_key(YOUTUBE_API_KEY)}")
 
 
 # Helper function to fetch channel details by channel name
 def get_channel_details_by_name(channel_name):
-    url = f'{BASE_URL}search?key={YOUTUBE_API_KEY}&q={channel_name}&type=channel&part=snippet'
+    url = f'{BASE_URL}search?key={YOUTUBE_API_KEY}&q={
+        channel_name}&type=channel&part=snippet'
     response = requests.get(url)
+    
+    if response.status_code == 403 and "quotaExceeded" in response.text:
+        print("Quota exceeded, switching API key...")
+        switch_api_key()  # Switch the global key
+        url = f'{BASE_URL}search?key={YOUTUBE_API_KEY}&q={
+            channel_name}&type=channel&part=snippet'
+        response = requests.get(url)
+        
     if response.status_code == 200:
         channels = response.json().get('items', [])
         if channels:
@@ -24,13 +61,14 @@ def get_channel_details_by_name(channel_name):
             print(f"No channels found for {channel_name}")
             return {}
     else:
-        print(f"Error fetching channel by name: {response:content}")
+        print(f"Error fetching channel by name: {response.content}")
         return {}
 
 
 # Helper function to fetch channel details (e.g., name)
 def get_channel_details(channel_id):
-    url = f'{BASE_URL}channels?key={YOUTUBE_API_KEY}&id={channel_id}&part=snippet'
+    url = f'{BASE_URL}channels?key={YOUTUBE_API_KEY}&id={
+        channel_id}&part=snippet'
     response = requests.get(url)
     if response.status_code == 200:
         return response.json().get('items', [])[0]
@@ -43,7 +81,7 @@ def get_channel_details(channel_id):
 def get_videos_from_channel(channel_id):
     url = f'{BASE_URL}search?key={YOUTUBE_API_KEY}&channelId={
         channel_id}&part=snippet,id&order=date&maxResults=50'
-    print(f"Fetching videos from channel: {channel_id}")
+    # print(f"Fetching videos from channel: {channel_id}")  # DEBUG
     # print(f"API URL: {url}")  # Debugging URL to make sure it's correct
     response = requests.get(url)
     # print(f"Response status: {response.status_code}")  # DEBUG
@@ -59,7 +97,7 @@ def get_videos_from_channel(channel_id):
 def get_video_details(video_id):
     url = f'{BASE_URL}videos?key={YOUTUBE_API_KEY}&id={
         video_id}&part=statistics,snippet'
-    print(f"Fetching video details for video ID: {video_id}")
+    # print(f"Fetching video details for video ID: {video_id}")  # DEBUG
     response = requests.get(url)
     # print(f"Error fetching video details: {response.content}")  # DEBUG
     if response.status_code == 200:
@@ -74,32 +112,53 @@ def fetch_data(request):
     video_details_list = []  # Initialize an empty list for the videos
     channel_id = None  # Initialise as None
     channel_name = None  # Initialise as None
-    # sort_by = None
-    # direction = 'asc'  # Default to ascending
 
     if request.method == 'POST':
-        # Search for channel by name
-        search_channel_name = request.POST.get('channel_name')
-        print(f"Channel name received: {search_channel_name}")
-        # channel_id = request.POST.get('channel_id')
-        # print(f"Channel ID received: {channel_id}")
+        # Retrieve values from form 
+        search_channel_id = request.POST.get('channel_id', '').strip()
+        search_channel_name = request.POST.get('channel_name', '').strip()
+        # print(f"Channel ID received: {search_channel_id}")
+        # print(f"Channel name received: {search_channel_name}")
+
+        # Ensure that either channel name or channel ID is provided
+        if not search_channel_id and not search_channel_name:
+            return HttpResponse(
+                "Please provide either a channel ID nor a Channel Name.")
         
-        # Fetch channel details by name
-        channel_details = get_channel_details_by_name(search_channel_name)
-        channel_name = channel_details.get('snippet', {}).get(
-            'title', 'Unknown Channel')
-        channel_id = channel_details.get('id', {}).get('channelId')
+        # print(f"Channel Name entered: {search_channel_name}")
+        # print(f"Channel ID entered: {search_channel_id}")
         
+        # Search by channel ID if provided
+        if search_channel_id:
+            # print(f"Fetching data using Channel ID: {search_channel_id}")
+            # Fetch channel details by ID
+            channel_details = get_channel_details(search_channel_id)
+            # print(f"Channel Details (ID): {channel_details}")  # Debugging
+            
+            channel_name = channel_details.get('snippet', {}).get(
+                'title', 'Unknown Channel')
+            channel_id = search_channel_id  # Use the ID directly
+
+        # Otherwise, search by channel name if provided
+        elif search_channel_name:
+            # print(f"Fetching data using Channel Name: {search_channel_name}")
+            # Fetch channel details by name
+            channel_details = get_channel_details_by_name(search_channel_name)
+            # print(f"Channel Details (Name): {channel_details}")  # Debugging
+            
+            channel_name = channel_details.get('snippet', {}).get(
+                'title', 'Unknown Channel')
+            channel_id = channel_details.get('id', {}).get('channelId')
+            
+        # If no channel was found, retun an error
         if not channel_id:
-            return HttpResponse(f"No channel found for {search_channel_name}")
+            return HttpResponse(
+                f"No channel found for {
+                    search_channel_name or search_channel_id}"
+            )
 
-        # # Fetch channel details to get the channel name
-        # channel_details = get_channel_details(channel_id)
-        # channel_name = channel_details.get('snippet', {}).get(
-        #     'title', 'Unknown Channel')
-
+        # Fetch videos from the channel
         videos = get_videos_from_channel(channel_id)
-
         # Fetch detailed info for each video
         for video in videos:
             video_id = video['id'].get('videoId')
@@ -107,12 +166,9 @@ def fetch_data(request):
                 video_details = get_video_details(video_id)
                 
                 # Get the comment count from statistics
-                comments_count= video_details['statistics'].get('commentCount', 0)
+                comments_count = video_details['statistics'].get(
+                    'commentCount', 0)
                 
-                # # Fetch the comments for the video
-                # comments = fetch_comments(video_id)
-                # video_details['comments_list'] = comments
-
                 # Calculate days since published
                 published_at = video_details['snippet']['publishedAt']
                 published_date = datetime.strptime(
@@ -202,7 +258,7 @@ def export_to_csv(request):
 
     # Write the header row
     writer.writerow(['Title', 'Published At', 'Views', 'Likes',
-                     'Comments', 'Engagement Rate', 'Comments Text'])
+                     'Comments', 'Total Engagement %', 'Comments Text'])
 
     # Write data rows
     for video in video_details_list:

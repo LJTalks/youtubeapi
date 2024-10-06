@@ -10,16 +10,14 @@
         <!-- Search by channel name -->
         <div class="form-group">
             <label for="channel_name">Enter YouTube Channel Name:</label>
-            <input type="text" id="channel_name" name="channel_name" class="form-control" required
+            <input type="text" id="channel_name" name="channel_name" class="form-control"
                 placeholder="Enter Channel Name">
         </div>
-        <!-- <p>Or...</p> -->
         <!-- Search by channel ID -->
-        <!-- <div class="form-group">
-            <label for="channel_id">Enter YouTube Channel ID:</label>
-            <input type="text" id="channel_id" name="channel_id" class="form-control" required
-                placeholder="Enter Channel ID">
-        </div> -->
+        <div class="form-group">
+            <label for="channel_id">Or Enter YouTube Channel ID:</label>
+            <input type="text" id="channel_id" name="channel_id" class="form-control" placeholder="Enter Channel ID">
+        </div>
 
         <!-- Fetch Button -->
         <div class="text-center">
@@ -27,6 +25,23 @@
         </div>
     </form>
     <!-- End form  -->
+
+    <!-- JavaScript form validation -->
+    <script>
+        function validateForm() {
+            var channelName = document.getElementById('channel_name').value;
+            var channelId = document.getElementById('channel_id').value;
+
+            // Check if both fields are empty
+            if (channelName === "" && channelId === "") {
+                alert("Please fill in either the Channel Name or the Channel ID.");
+                return false;
+            }
+
+            // If at least one is filled, allow the form to submit
+            return true;
+        }
+    </script>
 
     {% if video_details_list %}
     <!-- Export CSV button (if data in list) -->
@@ -86,5 +101,9 @@
         </div>
     </div>
     {% endif %}
+    <div class="text-center">
+        <p>Data provided by YouTube</p>
+    </div>
 </div>
+
 {% endblock %}
