@@ -13,15 +13,7 @@
                 placeholder="Enter Channel ID" value="{{ channel_id }}">
         </div>
 
-        <!-- Sort Field
-        <div class="form-group">
-            <label for="sort-by">Sort by:</label>
-            <select id="sort_by" name="sort_by" class="form-control">
-                <option value="date">Published Date</option>
-                <option value="views">Views</option>
-                <option value="total_engagement_rate">Engagement Rate</option>
-            </select>
-        </div> -->
+
 
         <!-- Fetch Button -->
         <div class="text-center">
@@ -44,13 +36,35 @@
                         <p class="card-text">
                             <strong>Published on:</strong> {{ video.formatted_published_date }}<br>
                             <strong>Views:</strong> {{ video.statistics.viewCount }}<br>
+
+
                             <strong>Likes:</strong> {{ video.statistics.likeCount }} |
                             {{ video.likes_to_views|floatformat:2 }}%<br>
+
                             <strong>Comments:</strong> {{ video.statistics.commentCount }} |
                             {{ video.comments_to_views|floatformat:2 }}%<br>
+
                             <strong>Total Engagement:</strong> {{ video.total_engagement_rate|floatformat:2 }}%<br>
                             <strong>Days Since Published:</strong> {{ video.days_since_published }}
                         </p>
+
+                        <!-- {% if forloop.first %} -->
+                        <!-- Only show the arrows on the first card -->
+                        <!-- <div class="sort-arrows">
+                            <label for="sort">Sort by:</label>
+                            <select id="sort" name="sort" onchange="submitForm()">
+                                <option value="published_at" {% if sort_by == 'published_at' %}selected{% endif %}>
+                                    Published Date</option>
+                                <option value="views" {% if sort_by == 'views' %}selected{% endif %}>Views</option>
+                                <option value="likes" {% if sort_by == 'likes' %}selected{% endif %}>Likes</option>
+                                <option value="comments" {% if sort_by == 'comments' %}selected{% endif %}>Comments
+                                </option>
+                            </select>
+                            <button type="button" class="arrow-up" onclick="sortVideos('asc')">▲</button>
+                            <button type="button" class="arrow-down" onclick="sortVideos('desc')">▼</button>
+                        </div>
+                        {% endif %} -->
+
                     </div>
                 </div>
             </div>

@@ -42,12 +42,13 @@ def get_video_details(video_id):
 def fetch_data(request):
     video_details_list = []  # Initialize an empty list for the videos
     channel_id = None  # Initialise as None
+    sort_by = None
+    direction = 'asc'  # Default to ascending
     
     if request.method == 'POST':
         channel_id = request.POST.get('channel_id')
-        # sort_by = request.POST.get('sort_by')
+        print(f"Channel ID received: {channel_id}")
         
-        # print(f"Channel ID received: {channel_id}")
         videos = get_videos_from_channel(channel_id)
         
         # Fetch detailed info for each video
@@ -55,6 +56,7 @@ def fetch_data(request):
             video_id = video['id'].get('videoId')
             if video_id:  # Check if video_id exists before proceeding
                 video_details = get_video_details(video_id)
+                video_details_list.append(video_details)
                 
                 # Calculate days since published
                 published_at = video_details['snippet']['publishedAt']
@@ -89,9 +91,24 @@ def fetch_data(request):
                 video_details['total_engagement_rate'] = total_engagement_rate
                 
                 # Append the video details to the list (only once) 
-                video_details_list.append(video_details)
+                # video_details_list.append(video_details)
+        
+        # Sorting logic
+        sort_by = request.GET.get('sort_by', 'published_at')  # Default sort by pub
+        order = request.GET.get('order', 'asc')  # Default ascending
+
+        # if sort_by == 'date':
+        #     video_details_list.sort(key=lambda x: x['snippet'][
+        #         'publishedAt'], reverse=(direction == 'desc'))
+        if sort_by == 'views':
+            video_details_list.sort(key=lambda x: int(x['statistics']['viewCount']), reverse=(order == 'desc'))
+        elif sort_by == 'likes':
+            video_details_list.sort(key=lambda x: int(x['statistics']['likeCount']), reverse=(order == 'desc'))
+        elif sort_by == 'comments':
+            video_details_list.sort(key=lambda x: int(x['statistics']['commentCount']), reverse=(order == 'desc'))
+
                 
-        # # Sorting logic
+        # # Old Sorting logic
         # if sort_by == 'date':
         #     video_details_list.sort(key=lambda x: x[
         #         'snippet']['publishedAt'], reverse=True)
@@ -103,5 +120,8 @@ def fetch_data(request):
         #         'engagement_rate'], reverse=True)
 
     # Pass the video details to front-end for display
-    context = {'video_details_list': video_details_list}
+    context = {'video_details_list': video_details_list,
+               'channel_id': channel_id
+    }
+        
     return render(request, 'ytinfo/yt_main.html', context)
