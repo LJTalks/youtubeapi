@@ -7,13 +7,19 @@
     <!-- The form  -->
     <form method="POST" action="/fetch-data/" class="mt-3">
         {% csrf_token %}
+        <!-- Search by channel name -->
         <div class="form-group">
+            <label for="channel_name">Enter YouTube Channel Name:</label>
+            <input type="text" id="channel_name" name="channel_name" class="form-control" required
+                placeholder="Enter Channel Name">
+        </div>
+        <!-- <p>Or...</p> -->
+        <!-- Search by channel ID -->
+        <!-- <div class="form-group">
             <label for="channel_id">Enter YouTube Channel ID:</label>
             <input type="text" id="channel_id" name="channel_id" class="form-control" required
-                placeholder="Enter Channel ID" value="{% if channel_id %}{{ channel_id }}{% else %}''{% endif %}">
-        </div>
-
-
+                placeholder="Enter Channel ID">
+        </div> -->
 
         <!-- Fetch Button -->
         <div class="text-center">

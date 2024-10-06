@@ -12,6 +12,22 @@ YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 BASE_URL = 'https://www.googleapis.com/youtube/v3/'
 
 
+# Helper function to fetch channel details by channel name
+def get_channel_details_by_name(channel_name):
+    url = f'{BASE_URL}search?key={YOUTUBE_API_KEY}&q={channel_name}&type=channel&part=snippet'
+    response = requests.get(url)
+    if response.status_code == 200:
+        channels = response.json().get('items', [])
+        if channels:
+            return channels[0]  # Return the first channel found
+        else:
+            print(f"No channels found for {channel_name}")
+            return {}
+    else:
+        print(f"Error fetching channel by name: {response:content}")
+        return {}
+
+
 # Helper function to fetch channel details (e.g., name)
 def get_channel_details(channel_id):
     url = f'{BASE_URL}channels?key={YOUTUBE_API_KEY}&id={channel_id}&part=snippet'
@@ -62,13 +78,25 @@ def fetch_data(request):
     # direction = 'asc'  # Default to ascending
 
     if request.method == 'POST':
-        channel_id = request.POST.get('channel_id')
-        print(f"Channel ID received: {channel_id}")
+        # Search for channel by name
+        search_channel_name = request.POST.get('channel_name')
+        print(f"Channel name received: {search_channel_name}")
+        # channel_id = request.POST.get('channel_id')
+        # print(f"Channel ID received: {channel_id}")
         
-        # Fetch channel details to get the channel name
-        channel_details = get_channel_details(channel_id)
+        # Fetch channel details by name
+        channel_details = get_channel_details_by_name(search_channel_name)
         channel_name = channel_details.get('snippet', {}).get(
             'title', 'Unknown Channel')
+        channel_id = channel_details.get('id', {}).get('channelId')
+        
+        if not channel_id:
+            return HttpResponse(f"No channel found for {search_channel_name}")
+
+        # # Fetch channel details to get the channel name
+        # channel_details = get_channel_details(channel_id)
+        # channel_name = channel_details.get('snippet', {}).get(
+        #     'title', 'Unknown Channel')
 
         videos = get_videos_from_channel(channel_id)
 
