@@ -10,7 +10,7 @@
         <div class="form-group">
             <label for="channel_id">Enter YouTube Channel ID:</label>
             <input type="text" id="channel_id" name="channel_id" class="form-control" required
-                placeholder="Enter Channel ID" value="{{ channel_id }}">
+                placeholder="Enter Channel ID" value="{% if channel_id %}{{ channel_id }}{% else %}''{% endif %}">
         </div>
 
 
@@ -26,6 +26,9 @@
     <!-- Export CSV button (if data in list) -->
     <div class="text-center mt-5">
         <a href="{% url 'export_csv' %}" class="btn btn-success">Download CSV</a>
+    </div>
+    <div class="text-center">
+        <h3>{{ channel_name }}</h3>
     </div>
     <div class="mt-5">
         <h3>Video Details:</h3>
