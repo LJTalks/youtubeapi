@@ -23,6 +23,10 @@
     <!-- End form  -->
 
     {% if video_details_list %}
+    <!-- Export CSV button (if data in list) -->
+    <div class="text-center mt-5">
+        <a href="{% url 'export_csv' %}" class="btn btn-success">Download CSV</a>
+    </div>
     <div class="mt-5">
         <h3>Video Details:</h3>
         <div class="row">

@@ -6,4 +6,5 @@ urlpatterns = [
     path('', views.fetch_data, name='home'),
     # originl URL
     path('fetch-data/', views.fetch_data, name='fetch_data'),
+    path('export-csv/', views.export_to_csv, name='export_csv'),
     ]
