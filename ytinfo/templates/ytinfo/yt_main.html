@@ -9,19 +9,19 @@
     <form method="POST" action="/fetch-data/" class="mt-3">
         {% csrf_token %}
         <!-- Search by channel name -->
-        <div class="form-group">
-            <label for="channel_name">Enter YouTube Channel Name:</label>
+        <div class="form-group mb-3">
+            <label for="channel_name"><strong>YouTube Channel Name:</strong></label>
             <input type="text" id="channel_name" name="channel_name" class="form-control"
                 placeholder="Enter Channel Name">
         </div>
         <!-- Search by channel ID -->
-        <div class="form-group">
-            <label for="channel_id">Or Enter YouTube Channel ID:</label>
+        <div class="form-group mt-3">
+            <label for="channel_id"><strong>Enter YouTube Channel ID:</strong></label>
             <input type="text" id="channel_id" name="channel_id" class="form-control" placeholder="Enter Channel ID">
         </div>
 
         <!-- Fetch Button -->
-        <div class="text-center">
+        <div class="text-center mt-3">
             <button type="submit" class="btn btn-primary">Fetch Data</button>
         </div>
     </form>
@@ -46,10 +46,10 @@
 
     {% if video_details_list %}
     <!-- Export CSV button (if data in list) -->
-    <div class="text-center mt-5">
+    <div class="text-center mt-3">
         <a href="{% url 'export_csv' %}" class="btn btn-success">Download CSV</a>
     </div>
-    <div class="text-center">
+    <div class="text-center mb-4">
         <h3>{{ channel_name }}</h3>
     </div>
     <div class="mt-5">
@@ -58,8 +58,8 @@
 
             <!-- The loop -->
             {% for video in video_details_list %}
-            <div class="col-md-6 col-lg-4">
-                <div class="card mb-4">
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{ video.snippet.title }}</h5>
                         <p class="card-text">
@@ -102,7 +102,7 @@
         </div>
     </div>
     {% endif %}
-    <div class="text-center">
+    <div class="text-center mt-5">
         <p>Data provided by YouTube</p>
     </div>
 </div>
