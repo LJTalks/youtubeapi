@@ -2,13 +2,23 @@
 <html lang="en">
 
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}YouTube Data Fetcher{% endblock %}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+    <!-- Favicon -->
+    <!-- <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon"> -->
 </head>
 
 <body>
+
 
     <div class="container">
         {% block content %}
@@ -16,8 +26,39 @@
         {% endblock %}
     </div>
 
+
+    <!-- Footer -->
+    <div class="footer">
+        <footer class="footer mt-auto py-3">
+            <p class="m-0 text-center">2024 LJTalks</p>
+            <p class="m-0 text-center">
+                <a href="#" id="emailLink" class="text-white">Email Me</a>
+            </p>
+            <a class="text-white mx-4" href="https://www.facebook.com/profile.php?id=100072008119981" target="_blank"
+                class="text-white">
+                <i class="fab fa-facebook-square ms-3"></i>
+            </a>
+            <a class="text-white mx-4" href="https://x.com/1aurarara" target="_blank" class="text-white">
+                <i class="fab fa-twitter-square ms-3"></i>
+            </a>
+            <a class="text-white mx-4" href="https://www.instagram.com/mtb.laura" target="_blank" class="text-white">
+                <i class="fab fa-instagram-square ms-3"></i>
+            </a>
+            <a class="text-white mx-4" href="https://www.youtube.com/mtblaura" target="_blank" class="text-white">
+                <i class="fab fa-youtube-square ms-3"></i>
+            </a>
+            <a class="text-white mx-4" href="https://github.com/LJTalks" target="_blank" class="text-white">
+                <i class="fab fa-github-square ms-3"></i>
+            </a>
+            </p>
+        </footer>
+    </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+
+
 </body>
 
 </html>

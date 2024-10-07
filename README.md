@@ -4,17 +4,27 @@ This project is designed to retrieve video data from a YouTube channel using the
 
 The data fetched includes video titles, publication dates, view counts, like counts, comment counts, and more.
 
-This app is currently under development, with plans to allow users to input their own channel IDs, store data in a database, and provide a basic front-end interface.
+The app currently fetches video details, including titles, publication dates, view counts, like counts, comment counts, and engagement rates. Users can search for data by inputting a YouTube channel name or channel ID. The data can be exported into a CSV file for further analysis.
 
-## Features
+This app is in continuous development, with plans to expand its features further, such as storing data in a database for user access and providing additional analytics.
 
-Fetches data for YouTube videos from a given channel.
+## Current Features
 
-Stores video information (e.g., video ID, title, view count) in a PostgreSQL database.
+Fetches data for YouTube videos from a user-provided channel name or channel ID.
 
-Plans for a basic front-end interface where users can input their channel IDs and fetch video data.
+Calculates and displays engagement metrics, such as likes-to-views and comments-to-views ratios.
 
-Data is retrieved using the YouTube Data API and is stored securely, with API keys handled via environment variables.
+Option to export video data to a CSV file for further analysis.
+
+Integrates with the YouTube Data API for fetching real-time data.
+
+## Upcoming Features
+
+Store fetched video information in a PostgreSQL database for better access and future analytics.
+
+A front-end interface where users can log in and store their own channel data for easy access and ongoing analytics.
+
+Provide insights into video performance metrics such as subscriber growth, watch time, and audience demographics (depending on YouTube API limitations).
 
 ## Tech Stack
 
@@ -92,9 +102,9 @@ python manage.py runserver
 
 ## Usage
 
-Currently, data is fetched using a predefined YouTube channel ID. You can update this in the code for now.
+Currently, data is fetched by searching for a YouTube channel name or channel ID.
 
-Plans are in progress to implement a front-end where users can input their own YouTube channel IDs.
+Plans are in progress to implement full database storage and user-specific features.
 
 ## API Integration
 
@@ -102,7 +112,7 @@ We use the YouTube Data API v3 to fetch video information from YouTube channels.
 
 ## Steps to Obtain YouTube API Key:
 
-Go to the Google Cloud Console.
+Go to the [Google Cloud Console](https://console.cloud.google.com/).
 
 Create a new project.
 
@@ -152,9 +162,9 @@ heroku config:set DATABASE_URL=your_database_url
 
 Add a front-end form for users to input their YouTube channel ID and retrieve data.
 
-Store channel IDs in the database to allow multiple users to fetch data for their own channels.
+Store channel IDs in a database to allow multiple users to fetch and track their data over time.
 
-Implement more features to display data, like video performance metrics, in the front-end.
+Implement more advanced features to display video performance metrics such as watch time, audience engagement, etc.
 
 ## Contributing
 
@@ -162,9 +172,8 @@ Feel free to fork this project and submit pull requests. Suggestions and improve
 
 ## SECURITY CONCERNS
 
-Inadvertently sent API_KEY to github on initial commit, deleted and replaced key immediately.
+Note that the YouTube API Key was inadvertently pushed to GitHub in an early commit. The key has been deleted and replaced immediately.
 
 ## INTENTIONS
 
-This app is intended for personal research for users to check their own
-channel statistics.
+This app is intended for personal research for users to check their own YouTube channel statistics. It is not intended for mass data scraping or commercial purposes.
