@@ -17,8 +17,17 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import render
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ytinfo.urls')),  # Ensure this is set for your ytinfo app
+]
+
+# For errors
+def maintenance_view(request):
+    return render(request, 'maintenance.html')
+
+urlpatterns = [
+    path('', maintenance_view),  # Direct all requests to the maintenance page
 ]
